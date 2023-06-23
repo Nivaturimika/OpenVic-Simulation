@@ -61,7 +61,7 @@ namespace OpenVic {
 		const Building::level_t max_level;
 		const Timespan build_time;
 
-		BuildingType(std::string const& new_identifier, Building::level_t new_max_level, Timespan new_build_time);
+		BuildingType(ovstring const& new_identifier, Building::level_t new_max_level, Timespan new_build_time);
 
 	public:
 		BuildingType(BuildingType&&) = default;
@@ -77,9 +77,9 @@ namespace OpenVic {
 	public:
 		BuildingManager();
 
-		return_t add_building_type(std::string const& identifier, Building::level_t max_level, Timespan build_time);
+		return_t add_building_type(ovstring const& identifier, Building::level_t max_level, Timespan build_time);
 		void lock_building_types();
-		BuildingType const* get_building_type_by_identifier(std::string const& identifier) const;
+		BuildingType const* get_building_type_by_identifier(ovstring const& identifier) const;
 		return_t generate_province_buildings(Province& province) const;
 	};
 }

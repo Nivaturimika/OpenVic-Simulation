@@ -4,7 +4,7 @@
 
 using namespace OpenVic;
 
-Good::Good(std::string const& new_identifier, std::string const& new_category, colour_t new_colour, price_t new_base_price,
+Good::Good(ovstring const& new_identifier, ovstring const& new_category, colour_t new_colour, price_t new_base_price,
 	bool new_default_available, bool new_tradeable, bool new_currency, bool new_overseas_maintenance)
 	: HasIdentifier { new_identifier },
 	  HasColour { new_colour, true },
@@ -17,7 +17,7 @@ Good::Good(std::string const& new_identifier, std::string const& new_category, c
 	assert(base_price > NULL_PRICE);
 }
 
-std::string const& Good::get_category() const {
+ovstring const& Good::get_category() const {
 	return category;
 }
 
@@ -44,18 +44,18 @@ void Good::reset_to_defaults() {
 
 GoodManager::GoodManager() : goods { "goods" } {}
 
-return_t GoodManager::add_good(std::string const& identifier, std::string const& category, colour_t colour,
+return_t GoodManager::add_good(ovstring const& identifier, ovstring const& category, colour_t colour,
 	price_t base_price, bool default_available, bool tradeable, bool currency, bool overseas_maintenance) {
 	if (identifier.empty()) {
-		Logger::error("Invalid good identifier - empty!");
+		// Logger::error("Invalid good identifier - empty!");
 		return FAILURE;
 	}
 	if (category.empty()) {
-		Logger::error("Invalid good category - empty!");
+		// Logger::error("Invalid good category - empty!");
 		return FAILURE;
 	}
 	if (base_price <= NULL_PRICE) {
-		Logger::error("Invalid base price for ", identifier, ": ", base_price);
+		// Logger::error("Invalid base price for ", identifier, ": ", base_price);
 		return FAILURE;
 	}
 	return goods.add_item({ identifier, category, colour, base_price, default_available, tradeable, currency, overseas_maintenance });

@@ -21,7 +21,7 @@ namespace OpenVic {
 		friend struct Map;
 
 	private:
-		Region(std::string const& new_identifier);
+		Region(ovstring const& new_identifier);
 
 	public:
 		Region(Region&&) = default;

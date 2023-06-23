@@ -1,5 +1,9 @@
 #pragma once
+#include "economy/Good.hpp"
 
 namespace OpenVic {
-	class Simulation {};
+	class Simulation {
+		public:
+		GoodManager goodManager;
+	};
 }

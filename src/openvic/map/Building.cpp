@@ -76,7 +76,7 @@ void Building::tick(Date const& today) {
 	}
 }
 
-BuildingType::BuildingType(std::string const& new_identifier, Building::level_t new_max_level, Timespan new_build_time)
+BuildingType::BuildingType(ovstring const& new_identifier, Building::level_t new_max_level, Timespan new_build_time)
 	: HasIdentifier { new_identifier },
 	  max_level { new_max_level },
 	  build_time { new_build_time } {
@@ -94,7 +94,7 @@ Timespan BuildingType::get_build_time() const {
 
 BuildingManager::BuildingManager() : building_types { "building types" } {}
 
-return_t BuildingManager::add_building_type(std::string const& identifier, Building::level_t max_level, Timespan build_time) {
+return_t BuildingManager::add_building_type(ovstring const& identifier, Building::level_t max_level, Timespan build_time) {
 	if (identifier.empty()) {
 		Logger::error("Invalid building type identifier - empty!");
 		return FAILURE;
@@ -114,7 +114,7 @@ void BuildingManager::lock_building_types() {
 	building_types.lock();
 }
 
-BuildingType const* BuildingManager::get_building_type_by_identifier(std::string const& identifier) const {
+BuildingType const* BuildingManager::get_building_type_by_identifier(ovstring const& identifier) const {
 	return building_types.get_item_by_identifier(identifier);
 }
 

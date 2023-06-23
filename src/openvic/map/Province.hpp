@@ -24,7 +24,7 @@ namespace OpenVic {
 		// TODO - change this into a factory-like structure
 		Good const* rgo = nullptr;
 
-		Province(index_t new_index, std::string const& new_identifier, colour_t new_colour);
+		Province(index_t new_index, ovstring const& new_identifier, colour_t new_colour);
 
 	public:
 		Province(Province&&) = default;
@@ -36,11 +36,11 @@ namespace OpenVic {
 		return_t add_building(BuildingType const& type);
 		void lock_buildings();
 		void reset_buildings();
-		Building const* get_building_by_identifier(std::string const& identifier) const;
+		Building const* get_building_by_identifier(ovstring const& identifier) const;
 		std::vector<Building> const& get_buildings() const;
-		return_t expand_building(std::string const& building_type_identifier);
+		return_t expand_building(ovstring const& building_type_identifier);
 		Good const* get_rgo() const;
-		std::string to_string() const;
+		ovstring to_string() const;
 
 		void update_state(Date const& today);
 		void tick(Date const& today);

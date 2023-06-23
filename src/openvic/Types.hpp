@@ -25,9 +25,14 @@ namespace OpenVic {
 	constexpr colour_t float_to_alpha_value(float a) {
 		return float_to_colour_byte(a) << 24;
 	}
+	constexpr colour_t rgba_to_colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF) {
+		return (a << 24) | (r << 16) | (g << 8) | b;
+	}
 
 	using index_t = uint16_t;
 	static constexpr index_t NULL_INDEX = 0, MAX_INDEX = 0xFFFF;
+
+	using ovstring = std::wstring;
 
 	// TODO: price_t must be changed to a fixed-point numeric type before multiplayer
 	using price_t = double;
@@ -43,10 +48,10 @@ namespace OpenVic {
 	 * IdentifierRegistry instance.
 	 */
 	class HasIdentifier {
-		const std::string identifier;
+		const ovstring identifier;
 
 	protected:
-		HasIdentifier(std::string const& new_identifier);
+		HasIdentifier(ovstring const& new_identifier);
 
 	public:
 		HasIdentifier(HasIdentifier const&) = delete;
@@ -54,7 +59,7 @@ namespace OpenVic {
 		HasIdentifier& operator=(HasIdentifier const&) = delete;
 		HasIdentifier& operator=(HasIdentifier&&) = delete;
 
-		std::string const& get_identifier() const;
+		ovstring const& get_identifier() const;
 	};
 
 	/*
@@ -73,8 +78,8 @@ namespace OpenVic {
 		HasColour& operator=(HasColour&&) = delete;
 
 		colour_t get_colour() const;
-		std::string colour_to_hex_string() const;
-		static std::string colour_to_hex_string(colour_t const colour);
+		ovstring colour_to_hex_string() const;
+		static ovstring colour_to_hex_string(colour_t const colour);
 	};
 
 	/*
@@ -85,7 +90,7 @@ namespace OpenVic {
 	 */
 	template<class T, typename std::enable_if<std::is_base_of<HasIdentifier, T>::value>::type* = nullptr>
 	class IdentifierRegistry {
-		using identifier_index_map_t = std::map<std::string, size_t>;
+		using identifier_index_map_t = std::map<ovstring, size_t>;
 
 		const std::string name;
 		std::vector<T> items;
@@ -96,12 +101,12 @@ namespace OpenVic {
 		IdentifierRegistry(std::string const& new_name) : name(new_name) {}
 		return_t add_item(T&& item) {
 			if (locked) {
-				Logger::error("Cannot add item to the ", name, " registry - locked!");
+				// Logger::error("Cannot add item to the ", name, " registry - locked!");
 				return FAILURE;
 			}
 			T const* old_item = get_item_by_identifier(item.get_identifier());
 			if (old_item != nullptr) {
-				Logger::error("Cannot add item to the ", name, " registry - an item with the identifier \"", item.get_identifier(), "\" already exists!");
+				// Logger::error("Cannot add item to the ", name, " registry - an item with the identifier \"", item.get_identifier(), "\" already exists!");
 				return FAILURE;
 			}
 			identifier_index_map[item.get_identifier()] = items.size();
@@ -110,10 +115,10 @@ namespace OpenVic {
 		}
 		void lock(bool log = true) {
 			if (locked) {
-				Logger::error("Failed to lock ", name, " registry - already locked!");
+				// Logger::error("Failed to lock ", name, " registry - already locked!");
 			} else {
 				locked = true;
-				if (log) Logger::info("Locked ", name, " registry after registering ", get_item_count(), " items");
+				// if (log) Logger::info("Locked ", name, " registry after registering ", get_item_count(), " items");
 			}
 		}
 		bool is_locked() const {
@@ -127,12 +132,12 @@ namespace OpenVic {
 		size_t get_item_count() const {
 			return items.size();
 		}
-		T* get_item_by_identifier(std::string const& identifier) {
+		T* get_item_by_identifier(ovstring const& identifier) {
 			const identifier_index_map_t::const_iterator it = identifier_index_map.find(identifier);
 			if (it != identifier_index_map.end()) return &items[it->second];
 			return nullptr;
 		}
-		T const* get_item_by_identifier(std::string const& identifier) const {
+		T const* get_item_by_identifier(ovstring const& identifier) const {
 			const identifier_index_map_t::const_iterator it = identifier_index_map.find(identifier);
 			if (it != identifier_index_map.end()) return &items[it->second];
 			return nullptr;

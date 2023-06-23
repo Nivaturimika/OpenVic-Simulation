@@ -19,19 +19,19 @@ namespace OpenVic {
 		friend struct GoodManager;
 
 	private:
-		const std::string category;
+		const ovstring category;
 		const price_t base_price;
 		price_t price;
 		const bool default_available, tradeable, currency, overseas_maintenance;
 		bool available;
 
-		Good(std::string const& new_identifier, std::string const& new_category, colour_t new_colour, price_t new_base_price,
+		Good(ovstring const& new_identifier, ovstring const& new_category, colour_t new_colour, price_t new_base_price,
 			bool new_default_available, bool new_tradeable, bool new_currency, bool new_overseas_maintenance);
 
 	public:
 		Good(Good&&) = default;
 
-		std::string const& get_category() const;
+		ovstring const& get_category() const;
 		price_t get_base_price() const;
 		price_t get_price() const;
 		bool is_default_available() const;
@@ -46,7 +46,7 @@ namespace OpenVic {
 	public:
 		GoodManager();
 
-		return_t add_good(std::string const& identifier, std::string const& category, colour_t colour, price_t base_price,
+		return_t add_good(ovstring const& identifier, ovstring const& category, colour_t colour, price_t base_price,
 			bool default_available, bool tradeable, bool currency, bool overseas_maintenance);
 		void lock_goods();
 		void reset_to_defaults();

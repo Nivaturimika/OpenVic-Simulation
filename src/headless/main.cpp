@@ -9,7 +9,7 @@ int main() {
 	std::cout << "HEADLESS SIMULATION" << std::endl;
 
 
-	std::string vic2FolderLocation = "";
+	std::string vic2FolderLocation = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Victoria 2";
 	if (vic2FolderLocation.length() <= 0) {
 		std::cout << "Path to Victoria 2 folder not specified. Manually specify location: ";
 		std::cin >> vic2FolderLocation;
