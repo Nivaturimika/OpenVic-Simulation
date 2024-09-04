@@ -14,6 +14,7 @@
 #include "openvic-simulation/types/Date.hpp"
 #include "openvic-simulation/types/IndexedMap.hpp"
 #include "openvic-simulation/types/OrderedContainers.hpp"
+#include "openvic-simulation/types/unlabelledVec.hpp"
 #include "openvic-simulation/types/Vector.hpp"
 #include "openvic-simulation/utility/Getters.hpp"
 #include "openvic-simulation/utility/TslHelper.hpp"
@@ -160,6 +161,7 @@ namespace OpenVic {
 
 		node_callback_t expect_ivec2(callback_t<ivec2_t> callback);
 		node_callback_t expect_fvec2(callback_t<fvec2_t> callback);
+		node_callback_t expect_v2_vector3(callback_t<V2Vector3> callback);
 		node_callback_t expect_assign(key_value_callback_t callback);
 
 		using length_callback_t = std::function<size_t(size_t)>;

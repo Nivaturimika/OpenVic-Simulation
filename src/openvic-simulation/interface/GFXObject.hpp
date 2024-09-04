@@ -1,6 +1,7 @@
 #pragma once
 
 #include "openvic-simulation/interface/LoadBase.hpp"
+#include <openvic-simulation/types/unlabelledVec.hpp>
 
 namespace OpenVic::GFX {
 
@@ -118,11 +119,11 @@ namespace OpenVic::GFX {
 
 		fixed_point_t PROPERTY(start);
 		fixed_point_t PROPERTY(stop);
-		uint64_t PROPERTY(x);
-		uint64_t PROPERTY(y);
+		fixed_point_t PROPERTY(x);
+		fixed_point_t PROPERTY(y);
 
 		std::string PROPERTY(font);
-		uint64_t PROPERTY(scale);
+		fixed_point_t PROPERTY(scale);
 		bool PROPERTY(no_fade);
 		fixed_point_t PROPERTY(texture_loop);
 
@@ -191,26 +192,13 @@ namespace OpenVic::GFX {
 		friend std::unique_ptr<Billboard> std::make_unique<Billboard>();
 
 	public:
-		struct Offset {
-			friend class Billboard;
-		
-		private:
-			fixed_point_t PROPERTY(x);
-			fixed_point_t PROPERTY(y);
-			fixed_point_t PROPERTY(z);
-
-			Offset(fixed_point_t new_x, fixed_point_t new_y, fixed_point_t new_z);
-
-		public:
-			Offset(Offset&&) = default;
-		};
 
 	private:
 		std::string PROPERTY(texture_file);
 		fixed_point_t PROPERTY(scale);
 		int64_t PROPERTY(no_of_frames);
 		int64_t PROPERTY(font_size); //TODO: is this fixed point?
-		Offset PROPERTY(offset);
+		V2Vector3 PROPERTY(offset);
 		std::string PROPERTY(font);
 
 	protected:
@@ -275,6 +263,54 @@ namespace OpenVic::GFX {
 	};
 
 	/* Core.gfx */
+	class AnimatedMapText final : public Object {
+		friend std::unique_ptr<AnimatedMapText> std::make_unique<AnimatedMapText>();
 
+		//TODO: This format_t enum is the same as in GFXSprite, should this all be extracted
+		//to another datatype file?
+		enum class format_t {
+			left, centre, right, justified
+		};
+
+	public:
+		struct TextBlock {
+			friend class AnimatedMapText;
+			//format_t taken from GUI's AlignedElement, this is overall very similar
+
+		
+		private:
+			std::string PROPERTY(text);
+			colour_t PROPERTY(colour);
+			std::string PROPERTY(font);
+
+			fvec2_t PROPERTY(text_position);
+			fvec2_t PROPERTY(size);
+			//expect_fvec2(assign_variable_callback(position)),
+
+			format_t PROPERTY(format);
+
+			TextBlock();
+
+		public:
+			TextBlock(TextBlock&&) = default;
+		};
+
+	private:
+		fixed_point_t PROPERTY(speed);
+		fixed_point_t PROPERTY(scale);
+		V2Vector3 PROPERTY(position);
+		TextBlock PROPERTY(textblock);
+
+	protected:
+		AnimatedMapText();
+
+		bool _fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) override;
+
+	public:
+		AnimatedMapText(AnimatedMapText&&) = default;
+		virtual ~AnimatedMapText() = default;
+
+		OV_DETAIL_GET_TYPE
+	};
 
 }

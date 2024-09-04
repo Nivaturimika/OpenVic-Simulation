@@ -276,6 +276,28 @@ node_callback_t NodeTools::expect_fvec2(callback_t<fvec2_t> callback) {
 	return _expect_vec2<fixed_point_t, expect_fixed_point>(callback);
 }
 
+node_callback_t NodeTools::expect_v2_vector3(callback_t<V2Vector3> callback) {
+	return [callback](ast::NodeCPtr node) -> bool {
+		
+		int components = 0;
+		fixed_point_t x = 0;
+		fixed_point_t y = 0;
+		fixed_point_t z = 0;
+
+		bool ret = expect_list_of_length(3, expect_fixed_point(
+			[&components,&x,&y,&z](fixed_point_t val) -> bool {
+				if(components == 0) x = val;
+				else if(components == 1) y = val;
+				else z =  val;
+				components++;
+				return true;
+			}))(node);
+
+		ret &= callback(V2Vector3(x,y,z));
+		return ret;	
+	};
+}
+
 node_callback_t NodeTools::expect_assign(key_value_callback_t callback) {
 	return _expect_type<ast::AssignStatement>([callback](ast::AssignStatement const* assign_node) -> bool {
 		std::string_view left;

@@ -11,34 +11,10 @@ node_callback_t Object::expect_objects(length_callback_t length_callback, callba
 		"EMFXActorType", ZERO_OR_MORE, _expect_instance<Object, Actor>(callback),
 
 		/* arrows.gfx */
-		"arrowType", ZERO_OR_MORE, expect_dictionary_keys(
-			"name", ONE_EXACTLY, success_callback,
-			"size", ONE_EXACTLY, success_callback,
-			"textureFile", ONE_EXACTLY, success_callback,
-			"bodytexture", ONE_EXACTLY, success_callback,
-			"color", ONE_EXACTLY, success_callback,
-			"colortwo", ONE_EXACTLY, success_callback,
-			"endAt", ONE_EXACTLY, success_callback,
-			"height", ONE_EXACTLY, success_callback,
-			"type", ONE_EXACTLY, success_callback,
-			"heading", ONE_EXACTLY, success_callback,
-			"effect", ONE_EXACTLY, success_callback
-		),
+		"arrowType", ZERO_OR_MORE, _expect_instance<Object, ArrowType>(callback),
 
 		/* battlearrow.gfx */
-		"battlearrow", ZERO_OR_MORE, expect_dictionary_keys(
-			"name", ONE_EXACTLY, success_callback,
-			"textureFile", ONE_EXACTLY, success_callback,
-			"textureFile1", ONE_EXACTLY, success_callback,
-			"start", ONE_EXACTLY, success_callback,
-			"stop", ONE_EXACTLY, success_callback,
-			"x", ONE_EXACTLY, success_callback,
-			"y", ONE_EXACTLY, success_callback,
-			"font", ONE_EXACTLY, success_callback,
-			"scale", ONE_EXACTLY, success_callback,
-			"nofade", ZERO_OR_ONE, success_callback,
-			"textureloop", ZERO_OR_ONE, success_callback
-		),
+		"battlearrow", ZERO_OR_MORE, _expect_instance<Object, BattleArrow>(callback),
 		"mapinfo", ZERO_OR_MORE, _expect_instance<Object, MapInfo>(callback),
 
 		/* mapitems.gfx */
@@ -48,20 +24,8 @@ node_callback_t Object::expect_objects(length_callback_t length_callback, callba
 		"unitstatsBillboardType", ZERO_OR_MORE, _expect_instance<Object, UnitStatsBillboard>(callback),
 
 		/* core.gfx */
-		"animatedmaptext", ZERO_OR_MORE, expect_dictionary_keys(
-			"name", ONE_EXACTLY, success_callback,
-			"speed", ONE_EXACTLY, success_callback,
-			"position", ZERO_OR_ONE, success_callback,
-			"scale", ZERO_OR_ONE, success_callback,
-			"textblock", ONE_EXACTLY, expect_dictionary_keys(
-				"text", ONE_EXACTLY, success_callback,
-				"color", ONE_EXACTLY, success_callback,
-				"font", ONE_EXACTLY, success_callback,
-				"position", ONE_EXACTLY, success_callback,
-				"size", ONE_EXACTLY, success_callback,
-				"format", ONE_EXACTLY, success_callback
-			)
-		),
+		"animatedmaptext", ZERO_OR_MORE, _expect_instance<Object, AnimatedMapText>(callback),
+
 		"flagType", ZERO_OR_MORE, expect_dictionary_keys(
 			"name", ONE_EXACTLY, success_callback,
 			"size", ONE_EXACTLY, success_callback
@@ -172,51 +136,54 @@ bool Actor::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	return ret;
 }
 
-		/* arrows.gfx */
-		/*"arrowType", ZERO_OR_MORE, expect_dictionary_keys(
-			"name", ONE_EXACTLY, success_callback,
-			"size", ONE_EXACTLY, success_callback,
-			"textureFile", ONE_EXACTLY, success_callback,
-			"bodytexture", ONE_EXACTLY, success_callback,
-			"color", ONE_EXACTLY, success_callback,
-			"colortwo", ONE_EXACTLY, success_callback,
-			"endAt", ONE_EXACTLY, success_callback,
-			"height", ONE_EXACTLY, success_callback,
-			"type", ONE_EXACTLY, success_callback,
-			"heading", ONE_EXACTLY, success_callback,
-			"effect", ONE_EXACTLY, success_callback
-		),*/
+/* arrows.gfx */
+//todo: verify the texture files labels are correct
+ArrowType::ArrowType() : size { 5 }, texture_file {}, body_texture_file {},
+back_colour {}, progress_colour {}, end_at { 1 }, height { 1 }, arrow_type { 0 },
+heading { 1 }, effect_file {} {}
 
-BattleArrow::BattleArrow() : texture_file {}, scale { 1 } {}
-
-bool BattleArrow::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
+bool ArrowType::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
 
-	/*ret &= add_key_map_entries(key_map,
-		"textureFile", ZERO_OR_ONE, expect_string(assign_variable_callback_string(texture_file)),
-		"textureFile2", ZERO_OR_ONE, expect_string(assign_variable_callback_string(back_texture_file)),
-		"scale", ZERO_OR_ONE, expect_fixed_point(assign_variable_callback(scale))
-	);*/
+	ret &= add_key_map_entries(key_map,
+		"size", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(size)),
+		"textureFile", ONE_EXACTLY, expect_string(assign_variable_callback_string(texture_file)),
+		"bodytexture", ONE_EXACTLY, expect_string(assign_variable_callback_string(body_texture_file)),
+		"color", ONE_EXACTLY, expect_colour(assign_variable_callback(back_colour)),
+		"colortwo", ONE_EXACTLY, expect_colour(assign_variable_callback(progress_colour)),
+		"endAt", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(end_at)),
+		"height", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(height)),
+		"type", ONE_EXACTLY, expect_int64(assign_variable_callback(arrow_type)),
+		"heading", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(heading)),
+		"effect", ONE_EXACTLY, expect_string(assign_variable_callback_string(effect_file))
+	);
 
 	return ret;
 }
 
-/*
-		battlearrow.gfx
-		"battlearrow", ZERO_OR_MORE, expect_dictionary_keys(
-			"name", ONE_EXACTLY, success_callback,
-			"textureFile", ONE_EXACTLY, success_callback,
-			"textureFile1", ONE_EXACTLY, success_callback,
-			"start", ONE_EXACTLY, success_callback,
-			"stop", ONE_EXACTLY, success_callback,
-			"x", ONE_EXACTLY, success_callback,
-			"y", ONE_EXACTLY, success_callback,
-			"font", ONE_EXACTLY, success_callback,
-			"scale", ONE_EXACTLY, success_callback,
-			"nofade", ZERO_OR_ONE, success_callback,
-			"textureloop", ZERO_OR_ONE, success_callback
-		),
-*/
+/* battlearrow.gfx */
+//todo: verify textureFile and textureFile1
+BattleArrow::BattleArrow() : texture_file {}, back_texture_file {}, start { 1 }, stop { 1 },
+ x { 1 }, y { 1 }, font {}, scale { 1 }, no_fade { false }, texture_loop {} {}
+
+bool BattleArrow::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
+	bool ret = Object::_fill_key_map(key_map);
+
+	ret &= add_key_map_entries(key_map,
+		"textureFile", ONE_EXACTLY, expect_string(assign_variable_callback_string(texture_file)),
+		"textureFile1", ONE_EXACTLY, expect_string(assign_variable_callback_string(back_texture_file)),
+		"start", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(start)),
+		"stop", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(stop)),
+		"x", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(x)),
+		"y", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(y)),
+		"font", ONE_EXACTLY, expect_string(assign_variable_callback_string(font)),
+		"scale", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(scale)),
+		"nofade", ZERO_OR_ONE, expect_bool(assign_variable_callback(no_fade)),
+		"textureloop", ZERO_OR_ONE, expect_fixed_point(assign_variable_callback(texture_loop))
+	);
+
+	return ret;
+}
 
 MapInfo::MapInfo() : texture_file {}, scale { 1 } {}
 
@@ -258,13 +225,10 @@ bool Projection::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	return ret;
 }
 
-Billboard::Offset::Offset(fixed_point_t x, fixed_point_t y, fixed_point_t z) :
-	x { 0 }, y { 0 }, z { 0 } {}
 
 Billboard::Billboard() : 
 	texture_file {}, scale { 1 }, no_of_frames { 1 }, font_size { 7 },
-	offset {0,0,0},
-	font {} {}
+	offset {}, font {} {}
 
 //TODO: billboard was a <StringMapCaseInsensitive> on its dictionnary, how do we preserve this?
 bool Billboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
@@ -280,15 +244,7 @@ bool Billboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 		"noOfFrames", ZERO_OR_ONE, expect_int64(assign_variable_callback(no_of_frames)),
 		"scale", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(scale)),
 		"font_size", ZERO_OR_ONE, expect_int64(assign_variable_callback(font_size)),
-		"offset2", ZERO_OR_ONE,expect_list_of_length(3, expect_fixed_point(
-			[&components,&x,&y,&z](fixed_point_t val) -> bool {
-				if(components == 0) x = val;
-				else if(components == 1) y = val;
-				else z =  val;
-				components++;
-				return true;
-			})
-		),
+		"offset2", ZERO_OR_ONE, expect_v2_vector3(assign_variable_callback(offset)),
 		"font", ZERO_OR_ONE, expect_string(assign_variable_callback_string(font))
 	);
 
@@ -299,7 +255,6 @@ bool Billboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	return ret;
 }
 
-// Projection type
 UnitStatsBillboard::UnitStatsBillboard() : 
 	texture_file {}, mask_file {}, effect_file {}, scale { 1 },
 	no_of_frames { 1 }, font_size { 7 }, font {} {}
@@ -323,7 +278,6 @@ bool UnitStatsBillboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& ke
 }
 
 
-// Projection type
 ProgressBar3d::ProgressBar3d() : back_colour {}, progress_colour {}, size {}, effect_file {} {}
 
 //TODO: Verify there aren't more, unused properties?
@@ -335,6 +289,41 @@ bool ProgressBar3d::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map
 		"colortwo", ONE_EXACTLY, expect_colour(assign_variable_callback(back_colour)),
 		"size", ONE_EXACTLY, expect_ivec2(assign_variable_callback(size)),
 		"effectFile", ONE_EXACTLY, expect_string(assign_variable_callback_string(effect_file))
+	);
+
+	return ret;
+}
+
+
+/* core.gfx */
+AnimatedMapText::TextBlock::TextBlock() : 
+text {}, colour {}, font {}, text_position {}, size {}, format {} {}
+
+AnimatedMapText::AnimatedMapText() : 
+speed { 1 }, scale { 1 }, position {}, textblock {} {}
+
+//TODO: Verify there aren't more, unused properties?
+bool AnimatedMapText::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
+	bool ret = Object::_fill_key_map(key_map);
+
+	//TODO: we should probably extract format_t to a datatype file for both here and GFXSprite to interit from
+	using enum format_t;
+	static const string_map_t<format_t> format_map = {
+		{ "left", left }, { "right", right }, { "centre", centre }, { "center", centre }, { "justified", justified }
+	};
+
+	ret &= add_key_map_entries(key_map,
+		"speed", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(speed)),
+		"position", ZERO_OR_ONE, expect_v2_vector3(assign_variable_callback(position)),
+		"scale", ZERO_OR_ONE, expect_fixed_point(assign_variable_callback(scale)),
+		"textblock", ONE_EXACTLY, expect_dictionary_keys(
+			"text", ONE_EXACTLY,  expect_string(assign_variable_callback_string(textblock.text)),
+			"color", ONE_EXACTLY, expect_colour(assign_variable_callback(textblock.colour)),
+			"font", ONE_EXACTLY,  expect_string(assign_variable_callback_string(textblock.font)),
+			"position", ONE_EXACTLY, expect_fvec2(assign_variable_callback(textblock.text_position)),
+			"size", ONE_EXACTLY, expect_fvec2(assign_variable_callback(textblock.size)),
+			"format", ONE_EXACTLY, expect_identifier(expect_mapped_string(format_map, assign_variable_callback(textblock.format)))
+		)
 	);
 
 	return ret;
