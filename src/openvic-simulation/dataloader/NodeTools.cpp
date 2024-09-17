@@ -13,6 +13,7 @@
 #include <range/v3/view/enumerate.hpp>
 
 #include "openvic-simulation/types/Colour.hpp"
+#include "openvic-simulation/types/TextFormat.hpp"
 #include "openvic-simulation/utility/Getters.hpp"
 
 using namespace OpenVic;
@@ -262,6 +263,17 @@ NodeCallback auto _expect_vec2(Callback<vec2_t<T>> auto&& callback) {
 		ret &= callback(vec);
 		return ret;
 	};
+}
+
+node_callback_t NodeTools::_expect_text_format_t(callback_t<text_format_t> callback){
+	static const string_map_t<text_format_t> format_map = {
+		{ "left",  text_format_t::left },
+		{ "right", text_format_t::right },
+		{ "centre", text_format_t::centre },
+		{ "center", text_format_t::centre },
+		{ "justified", text_format_t::justified }
+	};
+	return expect_identifier(expect_mapped_string(format_map, callback));
 }
 
 static node_callback_t _expect_int(callback_t<ivec2_t::type> callback) {

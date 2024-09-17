@@ -1,4 +1,5 @@
 #include "GFXObject.hpp"
+#include "openvic-simulation/dataloader/NodeTools.hpp"
 
 using namespace OpenVic;
 using namespace OpenVic::GFX;
@@ -297,7 +298,7 @@ bool ProgressBar3d::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map
 
 /* core.gfx */
 AnimatedMapText::TextBlock::TextBlock() : 
-text {}, colour {}, font {}, text_position {}, size {}, format {} {}
+text {}, colour {}, font {}, text_position {}, size {}, format { text_format_t::left } {}
 
 AnimatedMapText::AnimatedMapText() : 
 speed { 1 }, scale { 1 }, position {}, textblock {} {}
@@ -305,12 +306,6 @@ speed { 1 }, scale { 1 }, position {}, textblock {} {}
 //TODO: Verify there aren't more, unused properties?
 bool AnimatedMapText::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
-
-	//TODO: we should probably extract format_t to a datatype file for both here and GFXSprite to interit from
-	using enum format_t;
-	static const string_map_t<format_t> format_map = {
-		{ "left", left }, { "right", right }, { "centre", centre }, { "center", centre }, { "justified", justified }
-	};
 
 	ret &= add_key_map_entries(key_map,
 		"speed", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(speed)),
@@ -322,7 +317,7 @@ bool AnimatedMapText::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_m
 			"font", ONE_EXACTLY,  expect_string(assign_variable_callback_string(textblock.font)),
 			"position", ONE_EXACTLY, expect_fvec2(assign_variable_callback(textblock.text_position)),
 			"size", ONE_EXACTLY, expect_fvec2(assign_variable_callback(textblock.size)),
-			"format", ONE_EXACTLY, expect_identifier(expect_mapped_string(format_map, assign_variable_callback(textblock.format)))
+			"format", ONE_EXACTLY, _expect_text_format_t(assign_variable_callback(textblock.format))
 		)
 	);
 
