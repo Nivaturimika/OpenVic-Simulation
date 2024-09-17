@@ -138,7 +138,6 @@ bool Actor::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 }
 
 /* arrows.gfx */
-//todo: verify the texture files labels are correct
 ArrowType::ArrowType() : size { 5 }, texture_file {}, body_texture_file {},
 back_colour {}, progress_colour {}, end_at { 1 }, height { 1 }, arrow_type { 0 },
 heading { 1 }, effect_file {} {}
@@ -163,16 +162,15 @@ bool ArrowType::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 }
 
 /* battlearrow.gfx */
-//todo: verify textureFile and textureFile1
-BattleArrow::BattleArrow() : texture_file {}, back_texture_file {}, start { 1 }, stop { 1 },
+BattleArrow::BattleArrow() : texture_arrow_body {}, texture_arrow_head {}, start { 1 }, stop { 1 },
  x { 1 }, y { 1 }, font {}, scale { 1 }, no_fade { false }, texture_loop {} {}
 
 bool BattleArrow::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
 
 	ret &= add_key_map_entries(key_map,
-		"textureFile", ONE_EXACTLY, expect_string(assign_variable_callback_string(texture_file)),
-		"textureFile1", ONE_EXACTLY, expect_string(assign_variable_callback_string(back_texture_file)),
+		"textureFile", ONE_EXACTLY, expect_string(assign_variable_callback_string(texture_arrow_body)),
+		"textureFile1", ONE_EXACTLY, expect_string(assign_variable_callback_string(texture_arrow_head)),
 		"start", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(start)),
 		"stop", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(stop)),
 		"x", ONE_EXACTLY, expect_fixed_point(assign_variable_callback(x)),
@@ -205,8 +203,11 @@ Projection::Projection() :
 	pulsating { false }, pulse_lowest { 1 }, pulse_speed { 1 },
 	additative { false }, expanding { 1 }, duration {}, fadeout {} {}
 
-//TODO: Verify whether size, pulseSpeed, duration, fadeout are fixedpoint_t or int
-//TODO: Verify there aren't more, unused properties?
+//TODO: Verify...
+// whether pulseSpeed is fixedpoint_t or int
+// pulseSpeed doesn't seem to do anything, so assume fixed_point_t since its a speed
+//fadeout could be int, expect_int_bool, or fixed_point_t
+//fadeout seems not to do anything
 bool Projection::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
 
@@ -231,14 +232,8 @@ Billboard::Billboard() :
 	texture_file {}, scale { 1 }, no_of_frames { 1 }, font_size { 7 },
 	offset {}, font {} {}
 
-//TODO: billboard was a <StringMapCaseInsensitive> on its dictionnary, how do we preserve this?
 bool Billboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
-
-	int components = 0;
-	fixed_point_t x = 0;
-	fixed_point_t y = 0;
-	fixed_point_t z = 0;
 
 	ret &= add_key_map_entries(key_map,
 		"texturefile", ONE_EXACTLY, expect_string(assign_variable_callback_string(texture_file)),
@@ -249,10 +244,6 @@ bool Billboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 		"font", ZERO_OR_ONE, expect_string(assign_variable_callback_string(font))
 	);
 
-	offset.x = x;
-	offset.y = y;
-	offset.z = z;
-
 	return ret;
 }
 
@@ -261,7 +252,6 @@ UnitStatsBillboard::UnitStatsBillboard() :
 	no_of_frames { 1 }, font_size { 7 }, font {} {}
 
 //TODO: Verify font_size is int
-//TODO: Verify there aren't more, unused properties?
 bool UnitStatsBillboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
 
@@ -281,7 +271,6 @@ bool UnitStatsBillboard::_fill_key_map(NodeTools::case_insensitive_key_map_t& ke
 
 ProgressBar3d::ProgressBar3d() : back_colour {}, progress_colour {}, size {}, effect_file {} {}
 
-//TODO: Verify there aren't more, unused properties?
 bool ProgressBar3d::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
 
@@ -303,7 +292,6 @@ text {}, colour {}, font {}, text_position {}, size {}, format { text_format_t::
 AnimatedMapText::AnimatedMapText() : 
 speed { 1 }, scale { 1 }, position {}, textblock {} {}
 
-//TODO: Verify there aren't more, unused properties?
 bool AnimatedMapText::_fill_key_map(NodeTools::case_insensitive_key_map_t& key_map) {
 	bool ret = Object::_fill_key_map(key_map);
 

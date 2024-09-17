@@ -84,14 +84,17 @@ namespace OpenVic::GFX {
 	private:
 		//Named<> already handles the name property
 		fixed_point_t PROPERTY(size);
-		std::string PROPERTY(texture_file);
+		//texture_file is unused, body_texture_file determines the appearance of the arrow
+		std::string PROPERTY(texture_file); //unused
 		std::string PROPERTY(body_texture_file);
+		//colours dont appear to be used
+		//TODO: Verify these property names for color and colortwo are correct
 		colour_t PROPERTY(back_colour);
 		colour_t PROPERTY(progress_colour);
 
 		fixed_point_t PROPERTY(end_at); //how should float be repd? >> fixed_point handles it
 		fixed_point_t PROPERTY(height);
-		uint64_t PROPERTY(arrow_type);
+		uint64_t PROPERTY(arrow_type); //TODO: what does this do?
 		fixed_point_t PROPERTY(heading); //also float
 
 		std::string PROPERTY(effect_file);
@@ -109,19 +112,20 @@ namespace OpenVic::GFX {
 	};
 
 	/* battlearrow.gfx */
+	//TODO: unclear where/how these are used (if at all) in game
 	class BattleArrow final : public Object {
 		friend std::unique_ptr<BattleArrow> std::make_unique<BattleArrow>();
 	
 	private:
 		//Named<> already handles the name property
 		//TODO verify the texture places
-		std::string PROPERTY(texture_file);
-		std::string PROPERTY(back_texture_file);
+		std::string PROPERTY(texture_arrow_body);
+		std::string PROPERTY(texture_arrow_head);
 
-		fixed_point_t PROPERTY(start);
-		fixed_point_t PROPERTY(stop);
-		fixed_point_t PROPERTY(x);
-		fixed_point_t PROPERTY(y);
+		fixed_point_t PROPERTY(start); //labelled 'body start width' in file
+		fixed_point_t PROPERTY(stop);  //labelled 'body end width' in file
+		fixed_point_t PROPERTY(x);	 //labelled 'arrow length' in file
+		fixed_point_t PROPERTY(y);	 //labelled 'arrow height' in file
 
 		std::string PROPERTY(font);
 		fixed_point_t PROPERTY(scale);
@@ -140,6 +144,7 @@ namespace OpenVic::GFX {
 		OV_DETAIL_GET_TYPE
 	};
 
+	//TODO unclear if these are used or just a hoi3 leftover
 	class MapInfo final : public Object {
 		friend std::unique_ptr<MapInfo> std::make_unique<MapInfo>();
 	
@@ -166,7 +171,7 @@ namespace OpenVic::GFX {
 	private:
 		//Named<> already handles the name property
 		std::string PROPERTY(texture_file);
-		//TODO: should size, pulseSpeed, duration, fadeout be ints or fixed points? assume fixed_point_t to start
+		//TODO: pulseSpeed, fadeout be ints or fixed points? assume fixed_point_t to start
 		fixed_point_t PROPERTY(size);
 		fixed_point_t PROPERTY(spin);
 		bool PROPERTY(pulsating);
@@ -174,8 +179,8 @@ namespace OpenVic::GFX {
 		fixed_point_t PROPERTY(pulse_speed);
 		bool PROPERTY(additative);
 		fixed_point_t PROPERTY(expanding);
-		std::optional<fixed_point_t> PROPERTY(duration);
-		std::optional<fixed_point_t> PROPERTY(fadeout);
+		std::optional<fixed_point_t> PROPERTY(duration); //if present, determines how long until the projection disappears
+		std::optional<fixed_point_t> PROPERTY(fadeout); //appears to have no affect
 
 	protected:
 		Projection();
@@ -214,7 +219,7 @@ namespace OpenVic::GFX {
 		OV_DETAIL_GET_TYPE
 	};
 
-
+	//Appears to be unused, at least as of HoD
 	class UnitStatsBillboard final : public Object {
 		friend std::unique_ptr<UnitStatsBillboard> std::make_unique<UnitStatsBillboard>();
 
@@ -240,12 +245,11 @@ namespace OpenVic::GFX {
 		OV_DETAIL_GET_TYPE
 	};
 
+	//TODO: appears to go unused
 	class ProgressBar3d final : public Object {
 		friend std::unique_ptr<ProgressBar3d> std::make_unique<ProgressBar3d>();
 
 	private:
-		//Named<> already handles the name property
-		//TODO: are there any other properties which are unused
 		colour_t PROPERTY(back_colour);
 		colour_t PROPERTY(progress_colour);
 		ivec2_t PROPERTY(size);
